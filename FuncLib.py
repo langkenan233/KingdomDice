@@ -46,65 +46,94 @@ def select_elements_by_index(input_array):
 
 from collections import defaultdict
 
+from collections import defaultdict
+
+
 def calculate_score(dice):
     def compute_remaining_score(count):
         score = 0
-        # 处理三个或更多相同骰子的情况
+        # 处理三个或更多相同骰子
         for d in list(count.keys()):
             n = count[d]
             if n >= 3:
-                if d == 1:
-                    base = 1000
-                else:
-                    base = d * 100
-                if n == 3:
-                    multiplier = 1
-                elif n == 4:
+                base = 1000 if d == 1 else d * 100
+                multiplier = 1
+                if n == 4:
                     multiplier = 2
                 elif n == 5:
                     multiplier = 4
-                else:  # n >=6
+                elif n >= 6:
                     multiplier = 8
                 score += base * multiplier
-                count[d] = 0  # 扣除所有骰子
-        # 处理单独的1和5
-        score += count.get(1, 0) * 100
-        score += count.get(5, 0) * 50
+                count[d] = 0  # 扣除所有该骰子
+
+        # 处理单独的1和5（必须最后处理）
+        ones = count.get(1, 0)
+        score += ones * 100
+        count[1] = 0  # 扣除已计分的1
+
+        fives = count.get(5, 0)
+        score += fives * 50
+        count[5] = 0  # 扣除已计分的5
+
         return score
 
     original_count = defaultdict(int)
     for d in dice:
         original_count[d] += 1
 
-    max_score = 0
+    max_score = -1  # 初始化为-1表示非法
 
-    # 检查所有可能的顺子情况，并计算每种情况下的得分
-    # 情况1：顺子1-6
+    # 检查所有可能的计分组合
+    # 情况1：完整顺子1-6
     if all(original_count[d] >= 1 for d in [1, 2, 3, 4, 5, 6]):
         new_count = defaultdict(int, original_count)
+        valid = True
         for d in [1, 2, 3, 4, 5, 6]:
             new_count[d] -= 1
-        current_score = 1500 + compute_remaining_score(new_count)
-        max_score = max(max_score, current_score)
+            if new_count[d] < 0:
+                valid = False
+                break
+        if valid:
+            remaining_count = defaultdict(int, new_count)
+            current_score = 1500 + compute_remaining_score(remaining_count)
+            if all(v == 0 for v in remaining_count.values()):
+                max_score = max(max_score, current_score)
 
     # 情况2：小顺子1-5
     if all(original_count[d] >= 1 for d in [1, 2, 3, 4, 5]):
         new_count = defaultdict(int, original_count)
+        valid = True
         for d in [1, 2, 3, 4, 5]:
             new_count[d] -= 1
-        current_score = 500 + compute_remaining_score(new_count)
-        max_score = max(max_score, current_score)
+            if new_count[d] < 0:
+                valid = False
+                break
+        if valid:
+            remaining_count = defaultdict(int, new_count)
+            current_score = 500 + compute_remaining_score(remaining_count)
+            if all(v == 0 for v in remaining_count.values()):
+                max_score = max(max_score, current_score)
 
     # 情况3：小顺子2-6
     if all(original_count[d] >= 1 for d in [2, 3, 4, 5, 6]):
         new_count = defaultdict(int, original_count)
+        valid = True
         for d in [2, 3, 4, 5, 6]:
             new_count[d] -= 1
-        current_score = 750 + compute_remaining_score(new_count)
-        max_score = max(max_score, current_score)
+            if new_count[d] < 0:
+                valid = False
+                break
+        if valid:
+            remaining_count = defaultdict(int, new_count)
+            current_score = 750 + compute_remaining_score(remaining_count)
+            if all(v == 0 for v in remaining_count.values()):
+                max_score = max(max_score, current_score)
 
     # 情况4：不处理任何顺子
-    current_score = compute_remaining_score(defaultdict(int, original_count))
-    max_score = max(max_score, current_score)
+    remaining_count = defaultdict(int, original_count)
+    current_score = compute_remaining_score(remaining_count)
+    if all(v == 0 for v in remaining_count.values()):
+        max_score = max(max_score, current_score)
 
-    return max_score
+    return max_score if max_score != -1 else "数组非法"
