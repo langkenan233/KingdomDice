@@ -25,3 +25,20 @@ def check_conditions(dice):
     # 返回是否满足任一条件
     return has_one_or_five or has_three_of_a_kind
 
+
+def select_elements_by_index(input_array):
+    """
+    根据用户提供的索引（从1开始计数）从输入数组中选择元素。
+
+    :param input_array: 输入的数组
+    :param selected_indices: 用户输入的索引列表（字符串形式，逗号分隔）
+    :return: 选中的元素组成的数组
+    """
+    selected_indices = input("请输入要选择的元素索引（用逗号分隔）：")
+    # 将用户输入的索引字符串转换为整数列表，并调整索引以适应Python的0开始计数
+    indices = [int(index.strip()) - 1 for index in selected_indices.split(',')]
+
+    # 根据调整后的索引选择数组元素
+    selected_elements = [input_array[i] for i in indices if 0 <= i < len(input_array)]
+
+    return selected_elements
