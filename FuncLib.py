@@ -42,3 +42,69 @@ def select_elements_by_index(input_array):
     selected_elements = [input_array[i] for i in indices if 0 <= i < len(input_array)]
 
     return selected_elements
+
+
+from collections import defaultdict
+
+def calculate_score(dice):
+    def compute_remaining_score(count):
+        score = 0
+        # 处理三个或更多相同骰子的情况
+        for d in list(count.keys()):
+            n = count[d]
+            if n >= 3:
+                if d == 1:
+                    base = 1000
+                else:
+                    base = d * 100
+                if n == 3:
+                    multiplier = 1
+                elif n == 4:
+                    multiplier = 2
+                elif n == 5:
+                    multiplier = 4
+                else:  # n >=6
+                    multiplier = 8
+                score += base * multiplier
+                count[d] = 0  # 扣除所有骰子
+        # 处理单独的1和5
+        score += count.get(1, 0) * 100
+        score += count.get(5, 0) * 50
+        return score
+
+    original_count = defaultdict(int)
+    for d in dice:
+        original_count[d] += 1
+
+    max_score = 0
+
+    # 检查所有可能的顺子情况，并计算每种情况下的得分
+    # 情况1：顺子1-6
+    if all(original_count[d] >= 1 for d in [1, 2, 3, 4, 5, 6]):
+        new_count = defaultdict(int, original_count)
+        for d in [1, 2, 3, 4, 5, 6]:
+            new_count[d] -= 1
+        current_score = 1500 + compute_remaining_score(new_count)
+        max_score = max(max_score, current_score)
+
+    # 情况2：小顺子1-5
+    if all(original_count[d] >= 1 for d in [1, 2, 3, 4, 5]):
+        new_count = defaultdict(int, original_count)
+        for d in [1, 2, 3, 4, 5]:
+            new_count[d] -= 1
+        current_score = 500 + compute_remaining_score(new_count)
+        max_score = max(max_score, current_score)
+
+    # 情况3：小顺子2-6
+    if all(original_count[d] >= 1 for d in [2, 3, 4, 5, 6]):
+        new_count = defaultdict(int, original_count)
+        for d in [2, 3, 4, 5, 6]:
+            new_count[d] -= 1
+        current_score = 750 + compute_remaining_score(new_count)
+        max_score = max(max_score, current_score)
+
+    # 情况4：不处理任何顺子
+    current_score = compute_remaining_score(defaultdict(int, original_count))
+    max_score = max(max_score, current_score)
+
+    return max_score
