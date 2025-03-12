@@ -1,4 +1,5 @@
-from FuncLib import roll_dice, check_conditions, select_elements_by_index, calculate_score
+from DiceLib.NormalDice import NormalDice
+from FuncLib import roll_dice, check_conditions, select_elements_by_index, calculate_score, roll_all
 
 # 示例使用
 dice_max_number = 6
@@ -7,9 +8,20 @@ score = 0  # 分数
 turn_over = False  # 回合结束标记
 choice_number = 0  # 选择的骰子数
 
+normal_dice = NormalDice() #初始化普通骰子
+
+dice_list = [normal_dice,
+             normal_dice,
+             normal_dice,
+             normal_dice,
+             normal_dice,
+             normal_dice] #骰子列表，全是普通骰子
+
+dice_list_gaming=dice_list
+
 print("你的回合")
 
-dice_results = roll_dice(dice_number)
+dice_results = roll_all(dice_list_gaming)  #第一次的结果，数组
 
 while not turn_over:
     print("骰子结果为:", dice_results)

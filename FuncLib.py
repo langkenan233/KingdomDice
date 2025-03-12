@@ -1,4 +1,5 @@
 import random
+from collections import defaultdict
 # 这段代码模拟了一次扔出num_dice个骰子的过程
 def roll_dice(num_dice):
     results = []
@@ -31,7 +32,6 @@ def select_elements_by_index(input_array):
     根据用户提供的索引（从1开始计数）从输入数组中选择元素。
 
     :param input_array: 输入的数组
-    :param selected_indices: 用户输入的索引列表（字符串形式，逗号分隔）
     :return: 选中的元素组成的数组
     """
     selected_indices = input("请输入要选择的骰子编号（用逗号分隔）：")
@@ -42,12 +42,6 @@ def select_elements_by_index(input_array):
     selected_elements = [input_array[i] for i in indices if 0 <= i < len(input_array)]
 
     return selected_elements
-
-
-from collections import defaultdict
-
-from collections import defaultdict
-
 
 def calculate_score(dice):
     def compute_remaining_score(count):
@@ -137,3 +131,17 @@ def calculate_score(dice):
         max_score = max(max_score, current_score)
 
     return max_score if max_score != -1 else "数组非法"
+
+
+def roll_all(dice_list):
+    """
+    对传入的骰子列表中的每一个骰子调用roll方法，并将其结果存入一个数组中。
+
+    :param dice_list: 包含多个骰子对象的列表，每个骰子对象都需要有roll方法。
+    :return: 一个包含所有骰子roll结果的列表。
+    """
+    dice_results = []
+    for dice in dice_list:
+        result = dice.roll()
+        dice_results.append(result)
+    return dice_results
