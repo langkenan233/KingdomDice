@@ -1,4 +1,7 @@
+from DiceLib.EvenDice import EvenDice
+from DiceLib.LuckyDice import LuckyDice
 from DiceLib.NormalDice import NormalDice
+from DiceLib.OddDice import OddDice
 from FuncLib import *
 
 # 示例使用
@@ -9,13 +12,15 @@ turn_over = False  # 回合结束标记
 choice_number = 0  # 选择的骰子数
 
 normal_dice = NormalDice()  # 初始化普通骰子
-
-dice_list = [normal_dice,
+lucky_dice = LuckyDice()
+odd_dice = OddDice()
+even_dice = EvenDice()
+dice_list = [lucky_dice,
+             odd_dice,
              normal_dice,
              normal_dice,
              normal_dice,
-             normal_dice,
-             normal_dice]  # 骰子列表，全是普通骰子
+             normal_dice]  # 骰子列表
 
 dice_list_gaming = dice_list
 
@@ -24,6 +29,7 @@ print("你的回合")
 dice_results = roll_all(dice_list_gaming)  # 第一次的结果，数组
 
 while not turn_over:
+    print_dice_list_name(dice_list_gaming)
     print("骰子结果为:", dice_results)
     if check_conditions(dice_results):
 

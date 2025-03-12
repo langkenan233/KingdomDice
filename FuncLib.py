@@ -7,6 +7,11 @@ def roll_dice(num_dice):
         results.append(random.randint(1, 6))
     return results
 
+def print_dice_list_name(dice_list_gaming):
+    name_list = []
+    for dice in dice_list_gaming:
+        name_list.append(dice.name)
+    print(name_list)
 
 def check_conditions(dice):
     """
