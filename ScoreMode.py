@@ -33,14 +33,15 @@ dice_results = roll_all(dice_list_gaming)  # 第一次的结果，数组
 
 while score_sum < score_target:
 
-    score_this_turn = 0
-    turn = turn + 1
-    print("第",turn,"回合")
+    score_this_turn = 0  # 重置本回合得分
+    dice_list_gaming = dice_list  # 重置骰子
+    dice_number = dice_max_number  # 重置骰子数
+    turn_over = False  # 重置回合结束标志
 
-    dice_list_gaming = dice_list
-    dice_number = dice_max_number
+    turn = turn + 1
+    print("第", turn, "回合")
     dice_results = roll_all(dice_list_gaming)
-    turn_over = False
+
     while not turn_over:
         print_dice_list_name(dice_list_gaming)
         print("骰子结果为:", dice_results)
@@ -80,4 +81,4 @@ while score_sum < score_target:
             score_this_turn = 0
             turn_over = True
             print("你目前得分为：", score_sum)
-print("你使用了",turn,"回合！达成目标")
+print("你使用了", turn, "回合！达成目标")
